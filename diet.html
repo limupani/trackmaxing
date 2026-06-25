@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Meal Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0F0C0A;
+      --surface:    #141210;
+      --card:       #1E1B17;
+      --card-hi:    #252018;
+      --border:     rgba(255,255,255,0.07);
+      --border-xs:  rgba(255,255,255,0.04);
+
+      --gold:       #E8B86D;
+      --gold-bg:    rgba(232,184,109,0.10);
+      --gold-bd:    rgba(232,184,109,0.22);
+
+      --P:          #5B9CF6;
+      --P-bg:       rgba(91,156,246,0.12);
+      --P-bd:       rgba(91,156,246,0.22);
+
+      --C:          #E8B86D;
+      --C-bg:       rgba(232,184,109,0.12);
+      --C-bd:       rgba(232,184,109,0.22);
+
+      --F:          #F07A5A;
+      --F-bg:       rgba(240,122,90,0.12);
+      --F-bd:       rgba(240,122,90,0.22);
+
+      --green:      #5CC98B;
+      --green-bg:   rgba(92,201,139,0.10);
+      --green-bd:   rgba(92,201,139,0.22);
+
+      --t1: #F0EDE8;
+      --t2: #8A8075;
+      --t3: #4A433C;
+
+      --r:    14px;
+      --r-sm:  8px;
+      --rp:  100px;
+    }
+
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background: var(--bg);
+      color: var(--t1);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* ─── Layout ─────────────────────────────── */
+    .wrap { max-width: 600px; margin: 0 auto; padding: 0 20px; }
+
+    /* ─── Hero ───────────────────────────────── */
+    .hero { max-width: 600px; margin: 0 auto; padding: 56px 20px 34px; }
+
+    .eyebrow {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--t3); margin-bottom: 14px;
+    }
+
+    .hero-number {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(60px, 14vw, 84px);
+      font-weight: 700; color: var(--gold);
+      line-height: 1; letter-spacing: -0.025em;
+    }
+
+    .hero-unit { font-size: 19px; font-weight: 400; color: var(--t2); margin-left: 3px; vertical-align: middle; }
+
+    .hero-sub { font-size: 13px; color: var(--t2); margin-top: 11px; line-height: 1.6; }
+
+    .hero-badge {
+      display: inline-block; font-size: 11px; font-weight: 500;
+      padding: 3px 10px; border-radius: var(--rp);
+      background: var(--gold-bg); color: var(--gold);
+      border: 1px solid var(--gold-bd); margin-top: 10px; letter-spacing: 0.02em;
+    }
+
+    /* ─── Macro Bar ──────────────────────────── */
+    .macro-section { max-width: 600px; margin: 0 auto; padding: 0 20px 38px; }
+
+    .macro-labels { display: flex; margin-bottom: 9px; }
+
+    .ml { display: flex; flex-direction: column; gap: 2px; }
+    .ml.p { width: 27%; }
+    .ml.c { width: 52%; padding-left: 6px; }
+    .ml.f { width: 21%; text-align: right; }
+
+    .ml-name { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+    .ml.p .ml-name { color: var(--P); }
+    .ml.c .ml-name { color: var(--C); }
+    .ml.f .ml-name { color: var(--F); }
+
+    .ml-g { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; color: var(--t1); }
+    .ml-pct { font-size: 10px; color: var(--t3); }
+
+    .macro-bar {
+      height: 8px; border-radius: var(--rp); overflow: hidden;
+      display: flex; gap: 2px;
+      transform-origin: left center;
+      animation: barGrow 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    }
+
+    @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    .bar-seg { height: 100%; border-radius: var(--rp); }
+    .bar-seg.p { width: 27%; background: var(--P); }
+    .bar-seg.c { width: 52%; background: var(--C); }
+    .bar-seg.f { width: 21%; background: var(--F); }
+
+    /* ─── Stats grid ─────────────────────────── */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+
+    .stat {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 14px 12px;
+    }
+
+    .stat-label { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--t3); margin-bottom: 7px; }
+    .stat-val { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 700; color: var(--t1); line-height: 1; margin-bottom: 3px; }
+    .stat-sub { font-size: 10px; color: var(--t3); line-height: 1.3; }
+
+    /* ─── Daily Tracker Card ─────────────────── */
+    .tracker-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 18px 20px;
+      margin-bottom: 28px;
+      transition: border-color 0.3s ease;
+    }
+
+    .tracker-card.complete { border-color: rgba(92,201,139,0.3); }
+
+    .tracker-head {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 12px;
+    }
+
+    .tracker-title { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--t3); }
+
+    .tracker-pct {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px; font-weight: 700;
+      padding: 2px 9px; border-radius: var(--rp);
+      background: var(--gold-bg); color: var(--gold);
+      border: 1px solid var(--gold-bd);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .tracker-pct.complete { background: var(--green-bg); color: var(--green); border-color: var(--green-bd); }
+
+    .tracker-bar-bg {
+      height: 6px; background: var(--surface);
+      border-radius: var(--rp); overflow: hidden; margin-bottom: 14px;
+    }
+
+    .tracker-fill {
+      height: 100%; width: 0%; border-radius: var(--rp);
+      background: linear-gradient(90deg, var(--P) 0%, var(--gold) 60%, var(--F) 100%);
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .tracker-fill.complete { background: var(--green); }
+
+    .tracker-bottom {
+      display: flex; justify-content: space-between;
+      align-items: baseline; flex-wrap: wrap; gap: 8px;
+    }
+
+    .tracker-kcal-txt {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; font-weight: 700; color: var(--t1);
+    }
+
+    .tracker-kcal-txt span { color: var(--gold); }
+    .tracker-plan-txt { font-size: 11px; color: var(--t3); }
+
+    .tracker-macros { display: flex; gap: 12px; }
+
+    .tm {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px; font-weight: 600;
+    }
+    .tm.p { color: var(--P); }
+    .tm.c { color: var(--C); }
+    .tm.f { color: var(--F); }
+    .tm span { font-size: 12px; }
+
+    /* ─── Section label ──────────────────────── */
+    .sec-label {
+      font-size: 9px; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--t3); margin-bottom: 12px;
+    }
+
+    /* ─── Meal cards ─────────────────────────── */
+    .meals { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+
+    .meal-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 20px;
+      transition: background 0.15s ease, border-color 0.25s ease;
+      opacity: 0; transform: translateY(10px);
+      animation: cardIn 0.45s ease forwards;
+    }
+
+    .meal-card:hover { background: var(--card-hi); }
+    .meal-card.snack { border-color: rgba(232,184,109,0.18); }
+    .meal-card.meal-complete { border-color: rgba(92,201,139,0.22); }
+
+    .meals .meal-card:nth-child(1) { animation-delay: 0.10s; }
+    .meals .meal-card:nth-child(2) { animation-delay: 0.20s; }
+    .meals .meal-card:nth-child(3) { animation-delay: 0.28s; }
+    .meals .meal-card:nth-child(4) { animation-delay: 0.36s; }
+
+    @keyframes cardIn { to { opacity: 1; transform: translateY(0); } }
+
+    .card-head {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 18px;
+    }
+
+    .card-meta { display: flex; align-items: center; gap: 10px; }
+
+    .meal-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+      background: var(--surface); color: var(--t3);
+      border-radius: 6px; padding: 4px 8px; flex-shrink: 0;
+    }
+
+    .meal-card.snack .meal-tag { background: var(--gold-bg); color: var(--gold); }
+
+    .meal-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 600; color: var(--t1); margin-bottom: 3px; }
+    .meal-time { font-size: 12px; color: var(--t2); }
+
+    .meal-kcal-area { text-align: right; }
+
+    .meal-kcal {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 600; color: var(--t1);
+      white-space: nowrap; display: block; transition: color 0.2s;
+    }
+
+    .meal-kcal-target { font-size: 11px; color: var(--t3); white-space: nowrap; }
+
+    /* ─── Custom Checkboxes ──────────────────── */
+    .cb-wrap {
+      position: relative; display: flex;
+      align-items: center; cursor: pointer; flex-shrink: 0;
+    }
+
+    .cb-wrap input[type="checkbox"] {
+      position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+    }
+
+    .cb {
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 5px; border: 1.5px solid var(--t3);
+      background: transparent; flex-shrink: 0;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    /* Meal-level checkbox — slightly larger */
+    .meal-cb-wrap .cb { width: 20px; height: 20px; border-radius: 6px; }
+
+    /* Food-level checkbox — standard */
+    .food-cb-wrap .cb { width: 17px; height: 17px; }
+
+    /* Checked state */
+    .cb-wrap input:checked + .cb {
+      background: var(--gold); border-color: var(--gold);
+    }
+
+    /* Checkmark SVG (injected via pseudo-elements) */
+    .cb-wrap input:checked + .cb::after {
+      content: '';
+      display: block;
+      width: 9px; height: 5px;
+      border-left: 2px solid #0F0C0A;
+      border-bottom: 2px solid #0F0C0A;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+
+    /* Indeterminate — partial meal selection */
+    .meal-cb-wrap input:indeterminate + .cb {
+      background: var(--gold-bg); border-color: var(--gold);
+    }
+
+    .meal-cb-wrap input:indeterminate + .cb::after {
+      content: '';
+      display: block;
+      width: 8px; height: 2px;
+      background: var(--gold);
+    }
+
+    /* Hover glow */
+    .cb-wrap:hover .cb { border-color: var(--gold); }
+    .cb-wrap input:checked:hover + .cb { opacity: 0.85; }
+
+    /* ─── Food list ──────────────────────────── */
+    .food-list {
+      list-style: none; border-top: 1px solid var(--border-xs);
+      padding-top: 14px; margin-bottom: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .food-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      transition: opacity 0.15s ease;
+    }
+
+    .food-item.item-unchecked { opacity: 0.5; }
+
+    .food-item-body { flex: 1; min-width: 0; }
+
+    .food-name { font-size: 13px; font-weight: 500; color: var(--t1); margin-bottom: 2px; }
+    .food-detail { font-size: 12px; color: var(--t2); }
+
+    /* ─── Macro pills ────────────────────────── */
+    .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .pill {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: var(--rp); letter-spacing: 0.01em;
+      transition: opacity 0.2s ease;
+    }
+
+    .pill.p { background: var(--P-bg); color: var(--P); border: 1px solid var(--P-bd); }
+    .pill.c { background: var(--C-bg); color: var(--C); border: 1px solid var(--C-bd); }
+    .pill.f { background: var(--F-bg); color: var(--F); border: 1px solid var(--F-bd); }
+
+    .pill.zero { opacity: 0.35; }
+
+    /* ─── Daily total ────────────────────────── */
+    .total-row {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 14px 18px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 10px;
+      margin-top: 10px; margin-bottom: 28px;
+      transition: border-color 0.3s ease;
+    }
+
+    .total-row.complete { border-color: rgba(92,201,139,0.3); }
+
+    .total-label { font-size: 12px; font-weight: 500; color: var(--t2); }
+    .total-stats { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; }
+
+    .ts { display: flex; align-items: baseline; gap: 3px; }
+
+    .ts-val { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; }
+    .ts-unit { font-size: 11px; color: var(--t3); }
+
+    /* ─── Flex budget ────────────────────────── */
+    .flex-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 20px; margin-bottom: 38px;
+    }
+
+    .flex-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+
+    .flex-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--t1); }
+
+    .flex-badge {
+      font-size: 11px; font-weight: 500; padding: 3px 10px;
+      border-radius: var(--rp); background: var(--gold-bg);
+      color: var(--gold); border: 1px solid var(--gold-bd);
+    }
+
+    .flex-desc { font-size: 12px; color: var(--t2); margin-bottom: 16px; line-height: 1.6; }
+
+    .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .flex-opt { background: var(--surface); border-radius: var(--r-sm); padding: 12px 13px; }
+    .flex-opt-name { font-size: 12px; font-weight: 500; color: var(--t1); margin-bottom: 3px; }
+    .flex-opt-det { font-size: 11px; color: var(--t2); }
+
+    /* ─── Dinner swaps ───────────────────────── */
+    .swaps-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 18px 20px; margin-bottom: 28px;
+    }
+
+    .swaps-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--t1); margin-bottom: 12px; }
+
+    .swap-row {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 8px 0; border-bottom: 1px solid var(--border-xs);
+    }
+    .swap-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .swap-row:first-of-type { padding-top: 0; }
+
+    .swap-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--t3); flex-shrink: 0; margin-top: 7px; }
+    .swap-label { font-size: 12px; font-weight: 500; color: var(--t1); margin-bottom: 2px; }
+    .swap-detail { font-size: 11px; color: var(--t2); }
+
+    /* ─── Footer ─────────────────────────────── */
+    .footer { font-size: 11px; color: var(--t3); text-align: center; line-height: 1.9; }
+
+    /* ─── Reduced motion ─────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .macro-bar { animation: none; transform: none; }
+      .meal-card { animation: none; opacity: 1; transform: none; }
+      .tracker-fill { transition: none; }
+    }
+
+    /* ─── Mobile ─────────────────────────────── */
+    @media (max-width: 480px) {
+      .stats          { grid-template-columns: repeat(2, 1fr); }
+      .flex-grid      { grid-template-columns: 1fr; }
+      .total-stats    { gap: 12px; }
+      .hero           { padding-top: 40px; }
+      .tracker-bottom { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero" aria-label="Plan overview">
+    <p class="eyebrow">Daily fat-loss plan</p>
+    <p>
+      <span class="hero-number">1,965</span><span class="hero-unit"> kcal / day</span>
+    </p>
+    <p class="hero-sub">285 kcal below maintenance &nbsp;&middot;&nbsp; ~0.26 kg fat loss per week</p>
+    <span class="hero-badge">~21 weeks to 12% body fat</span>
+  </header>
+
+  <!-- Macro Composition Bar -->
+  <section class="macro-section" aria-label="Macro split">
+    <div class="macro-labels" aria-hidden="true">
+      <div class="ml p">
+        <span class="ml-name">Protein</span>
+        <span class="ml-g">134g</span>
+        <span class="ml-pct">27% of kcal</span>
+      </div>
+      <div class="ml c">
+        <span class="ml-name">Carbs</span>
+        <span class="ml-g">258g</span>
+        <span class="ml-pct">52% of kcal</span>
+      </div>
+      <div class="ml f">
+        <span class="ml-name">Fat</span>
+        <span class="ml-g">47g</span>
+        <span class="ml-pct">21% of kcal</span>
+      </div>
+    </div>
+    <div class="macro-bar" role="img" aria-label="Calorie split: 27% protein, 52% carbohydrates, 21% fat">
+      <div class="bar-seg p"></div>
+      <div class="bar-seg c"></div>
+      <div class="bar-seg f"></div>
+    </div>
+  </section>
+
+  <main class="wrap">
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat">
+        <p class="stat-label">Timeline</p>
+        <p class="stat-val">~21</p>
+        <p class="stat-sub">weeks to goal</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Deficit</p>
+        <p class="stat-val">285</p>
+        <p class="stat-sub">kcal / day</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Target BF</p>
+        <p class="stat-val">12%</p>
+        <p class="stat-sub">from ~20% est.</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Fat loss</p>
+        <p class="stat-val">0.26</p>
+        <p class="stat-sub">kg / week</p>
+      </div>
+    </div>
+
+    <!-- Daily Tracker Card -->
+    <div class="tracker-card" id="tracker-card" aria-label="Daily intake progress">
+      <div class="tracker-head">
+        <span class="tracker-title">Logged today</span>
+        <span class="tracker-pct" id="tracker-pct">0%</span>
+      </div>
+      <div class="tracker-bar-bg">
+        <div class="tracker-fill" id="tracker-fill"></div>
+      </div>
+      <div class="tracker-bottom">
+        <div>
+          <span class="tracker-kcal-txt"><span id="t-kcal">0</span> kcal</span>
+          <span class="tracker-plan-txt">&nbsp;/ 1,965 planned</span>
+        </div>
+        <div class="tracker-macros">
+          <span class="tm p">P&thinsp;<span id="t-p">0</span>g</span>
+          <span class="tm c">C&thinsp;<span id="t-c">0</span>g</span>
+          <span class="tm f">F&thinsp;<span id="t-f">0</span>g</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meals -->
+    <p class="sec-label">Meals</p>
+    <div class="meals">
+
+      <!-- Breakfast -->
+      <article class="meal-card" data-meal="breakfast" aria-labelledby="m1">
+        <div class="card-head">
+          <div class="card-meta">
+            <label class="cb-wrap meal-cb-wrap" title="Select all breakfast items" aria-label="Check all breakfast items">
+              <input type="checkbox" class="meal-checkbox" id="meal-breakfast">
+              <span class="cb"></span>
+            </label>
+            <span class="meal-tag" aria-hidden="true">01</span>
+            <div>
+              <h2 class="meal-name" id="m1">Breakfast</h2>
+              <p class="meal-time">7:00 &ndash; 8:00 AM</p>
+            </div>
+          </div>
+          <div class="meal-kcal-area">
+            <span class="meal-kcal" id="kcal-breakfast">0 kcal</span>
+            <span class="meal-kcal-target">/ 571 target</span>
+          </div>
+        </div>
+        <ul class="food-list">
+          <li class="food-item item-unchecked" data-p="13" data-c="84" data-f="9">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log oat milkshake">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Oat milkshake</p>
+              <p class="food-detail">40g oats &middot; 1 banana &middot; 2 dates &middot; 200ml milk</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="7" data-c="1" data-f="0">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log egg whites">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Egg whites</p>
+              <p class="food-detail">2 whites &middot; boiled or omelette, minimal oil</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="1" data-c="21" data-f="1">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log seasonal fruit">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Seasonal fruit</p>
+              <p class="food-detail">apple, guava or orange &middot; 150g</p>
+            </div>
+          </li>
+        </ul>
+        <div class="pills">
+          <span class="pill p zero" id="pill-p-breakfast">P&thinsp;0g</span>
+          <span class="pill c zero" id="pill-c-breakfast">C&thinsp;0g</span>
+          <span class="pill f zero" id="pill-f-breakfast">F&thinsp;0g</span>
+        </div>
+      </article>
+
+      <!-- Lunch -->
+      <article class="meal-card" data-meal="lunch" aria-labelledby="m2">
+        <div class="card-head">
+          <div class="card-meta">
+            <label class="cb-wrap meal-cb-wrap" title="Select all lunch items" aria-label="Check all lunch items">
+              <input type="checkbox" class="meal-checkbox" id="meal-lunch">
+              <span class="cb"></span>
+            </label>
+            <span class="meal-tag" aria-hidden="true">02</span>
+            <div>
+              <h2 class="meal-name" id="m2">Lunch</h2>
+              <p class="meal-time">1:00 &ndash; 2:00 PM</p>
+            </div>
+          </div>
+          <div class="meal-kcal-area">
+            <span class="meal-kcal" id="kcal-lunch">0 kcal</span>
+            <span class="meal-kcal-target">/ 640 target</span>
+          </div>
+        </div>
+        <ul class="food-list">
+          <li class="food-item item-unchecked" data-p="8" data-c="25" data-f="2">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log boiled chickpeas">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Boiled chickpeas</p>
+              <p class="food-detail">120g cooked &middot; lemon + chaat masala optional</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="7" data-c="23" data-f="1">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log red kidney beans">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Red kidney beans</p>
+              <p class="food-detail">120g cooked</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="3" data-c="12" data-f="1">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log boiled corn">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Boiled corn</p>
+              <p class="food-detail">50g kernels</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="51" data-c="10" data-f="6">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log boiled chicken breast">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Boiled chicken breast</p>
+              <p class="food-detail">150g &middot; no skin &middot; plain or lightly spiced</p>
+            </div>
+          </li>
+        </ul>
+        <div class="pills">
+          <span class="pill p zero" id="pill-p-lunch">P&thinsp;0g</span>
+          <span class="pill c zero" id="pill-c-lunch">C&thinsp;0g</span>
+          <span class="pill f zero" id="pill-f-lunch">F&thinsp;0g</span>
+        </div>
+      </article>
+
+      <!-- Snack -->
+      <article class="meal-card snack" data-meal="snack" aria-labelledby="ms">
+        <div class="card-head">
+          <div class="card-meta">
+            <label class="cb-wrap meal-cb-wrap" title="Select snack" aria-label="Check snack">
+              <input type="checkbox" class="meal-checkbox" id="meal-snack">
+              <span class="cb"></span>
+            </label>
+            <span class="meal-tag" aria-hidden="true">S</span>
+            <div>
+              <h2 class="meal-name" id="ms">Snack</h2>
+              <p class="meal-time">4:00 &ndash; 5:00 PM</p>
+            </div>
+          </div>
+          <div class="meal-kcal-area">
+            <span class="meal-kcal" id="kcal-snack">0 kcal</span>
+            <span class="meal-kcal-target">/ 60 target</span>
+          </div>
+        </div>
+        <ul class="food-list">
+          <li class="food-item item-unchecked" data-p="10" data-c="4" data-f="0">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log Greek yogurt">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Greek yogurt</p>
+              <p class="food-detail">100g &middot; plain, non-fat or low-fat</p>
+            </div>
+          </li>
+        </ul>
+        <div class="pills">
+          <span class="pill p zero" id="pill-p-snack">P&thinsp;0g</span>
+          <span class="pill c zero" id="pill-c-snack">C&thinsp;0g</span>
+          <span class="pill f zero" id="pill-f-snack">F&thinsp;0g</span>
+        </div>
+      </article>
+
+      <!-- Dinner -->
+      <article class="meal-card" data-meal="dinner" aria-labelledby="m3">
+        <div class="card-head">
+          <div class="card-meta">
+            <label class="cb-wrap meal-cb-wrap" title="Select all dinner items" aria-label="Check all dinner items">
+              <input type="checkbox" class="meal-checkbox" id="meal-dinner">
+              <span class="cb"></span>
+            </label>
+            <span class="meal-tag" aria-hidden="true">03</span>
+            <div>
+              <h2 class="meal-name" id="m3">Dinner</h2>
+              <p class="meal-time">8:00 &ndash; 9:00 PM</p>
+            </div>
+          </div>
+          <div class="meal-kcal-area">
+            <span class="meal-kcal" id="kcal-dinner">0 kcal</span>
+            <span class="meal-kcal-target">/ 694 target</span>
+          </div>
+        </div>
+        <ul class="food-list">
+          <li class="food-item item-unchecked" data-p="5" data-c="55" data-f="1">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log boiled rice">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Boiled rice</p>
+              <p class="food-detail">250g cooked &middot; always measure after cooking</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="18" data-c="2" data-f="17">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log scrambled eggs">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Scrambled eggs</p>
+              <p class="food-detail">3 whole eggs &middot; minimal oil &middot; non-stick pan</p>
+            </div>
+          </li>
+          <li class="food-item item-unchecked" data-p="11" data-c="21" data-f="9">
+            <label class="cb-wrap food-cb-wrap" aria-label="Log beef and daal kebab">
+              <input type="checkbox" class="food-checkbox">
+              <span class="cb"></span>
+            </label>
+            <div class="food-item-body">
+              <p class="food-name">Beef + daal kebab</p>
+              <p class="food-detail">1 piece &middot; ~55g</p>
+            </div>
+          </li>
+        </ul>
+        <div class="pills">
+          <span class="pill p zero" id="pill-p-dinner">P&thinsp;0g</span>
+          <span class="pill c zero" id="pill-c-dinner">C&thinsp;0g</span>
+          <span class="pill f zero" id="pill-f-dinner">F&thinsp;0g</span>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Daily Total (dynamic) -->
+    <div class="total-row" id="total-row" aria-label="Daily nutrition logged">
+      <span class="total-label">Logged today</span>
+      <div class="total-stats">
+        <div class="ts">
+          <span class="ts-val" id="total-kcal" style="color:var(--t1)">0</span>
+          <span class="ts-unit">kcal</span>
+        </div>
+        <div class="ts">
+          <span class="ts-val" id="total-p" style="color:var(--P)">0</span>
+          <span class="ts-unit">g P</span>
+        </div>
+        <div class="ts">
+          <span class="ts-val" id="total-c" style="color:var(--C)">0</span>
+          <span class="ts-unit">g C</span>
+        </div>
+        <div class="ts">
+          <span class="ts-val" id="total-f" style="color:var(--F)">0</span>
+          <span class="ts-unit">g F</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dinner swaps -->
+    <div class="swaps-card">
+      <p class="swaps-title">Dinner alternatives</p>
+      <div class="swap-row">
+        <span class="swap-dot" aria-hidden="true"></span>
+        <div>
+          <p class="swap-label">Salan night</p>
+          <p class="swap-detail">150g salan + 60g dry rice + 100g plain yogurt</p>
+        </div>
+      </div>
+      <div class="swap-row">
+        <span class="swap-dot" aria-hidden="true"></span>
+        <div>
+          <p class="swap-label">Extra kebab night</p>
+          <p class="swap-detail">2 kebabs + 250g cooked rice &middot; skip scrambled eggs</p>
+        </div>
+      </div>
+      <div class="swap-row">
+        <span class="swap-dot" aria-hidden="true"></span>
+        <div>
+          <p class="swap-label">Red beans night</p>
+          <p class="swap-detail">180g red beans curry + 60g dry rice</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add-on budget -->
+    <section class="flex-card" aria-labelledby="flex-h">
+      <div class="flex-head">
+        <h3 class="flex-title" id="flex-h">Daily add-on budget</h3>
+        <span class="flex-badge">75 kcal remaining</span>
+      </div>
+      <p class="flex-desc">
+        Pick one each day. These fit within your remaining carb room without
+        pushing past the 2,040 kcal daily ceiling.
+      </p>
+      <div class="flex-grid">
+        <div class="flex-opt">
+          <p class="flex-opt-name">Apple or guava</p>
+          <p class="flex-opt-det">~78 kcal &middot; 21g carbs</p>
+        </div>
+        <div class="flex-opt">
+          <p class="flex-opt-name">2&ndash;3 dates</p>
+          <p class="flex-opt-det">58&ndash;80 kcal &middot; 16&ndash;22g carbs</p>
+        </div>
+        <div class="flex-opt">
+          <p class="flex-opt-name">Chai (no sugar)</p>
+          <p class="flex-opt-det">~75 kcal &middot; 150ml milk</p>
+        </div>
+        <div class="flex-opt">
+          <p class="flex-opt-name">Honey in yogurt</p>
+          <p class="flex-opt-det">~21 kcal &middot; 1 tsp &middot; add to snack</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>59 kg &middot; 5&rsquo;3&Prime; &middot; 24 years old &middot; male</p>
+      <p>BMR 1,475 kcal &middot; TDEE 2,250 kcal &middot; Target 2,040 kcal</p>
+      <p>Est. current BF ~20% &middot; Goal 10&ndash;12% &middot; ~0.26 kg fat loss / week</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const PLANNED_KCAL = 1965;
+
+    /* ── helpers ─────────────────────────────────── */
+    const $ = id => document.getElementById(id);
+    const calcKcal = (p, c, f) => (p * 4) + (c * 4) + (f * 9);
+
+    /* ── update one meal card ────────────────────── */
+    function updateMeal(mealId) {
+      const card   = document.querySelector(`.meal-card[data-meal="${mealId}"]`);
+      const items  = [...card.querySelectorAll('.food-item')];
+      const mealCb = $(`meal-${mealId}`);
+
+      let totP = 0, totC = 0, totF = 0;
+      let checkedCount = 0;
+
+      items.forEach(item => {
+        const cb = item.querySelector('.food-checkbox');
+        if (cb.checked) {
+          totP += parseInt(item.dataset.p, 10) || 0;
+          totC += parseInt(item.dataset.c, 10) || 0;
+          totF += parseInt(item.dataset.f, 10) || 0;
+          checkedCount++;
+        }
+        // Visual dim for unchecked items
+        item.classList.toggle('item-unchecked', !cb.checked);
+      });
+
+      const kcal = calcKcal(totP, totC, totF);
+
+      // Meal kcal display
+      $(`kcal-${mealId}`).textContent = `${kcal} kcal`;
+
+      // Macro pills
+      const pillP = $(`pill-p-${mealId}`);
+      const pillC = $(`pill-c-${mealId}`);
+      const pillF = $(`pill-f-${mealId}`);
+
+      pillP.textContent = `P\u202F${totP}g`;
+      pillC.textContent = `C\u202F${totC}g`;
+      pillF.textContent = `F\u202F${totF}g`;
+
+      pillP.classList.toggle('zero', totP === 0);
+      pillC.classList.toggle('zero', totC === 0);
+      pillF.classList.toggle('zero', totF === 0);
+
+      // Meal checkbox indeterminate / checked / unchecked state
+      if (checkedCount === 0) {
+        mealCb.checked       = false;
+        mealCb.indeterminate = false;
+      } else if (checkedCount === items.length) {
+        mealCb.checked       = true;
+        mealCb.indeterminate = false;
+        card.classList.add('meal-complete');
+      } else {
+        mealCb.checked       = false;
+        mealCb.indeterminate = true;
+        card.classList.remove('meal-complete');
+      }
+
+      if (checkedCount < items.length) card.classList.remove('meal-complete');
+
+      updateDailyTotal();
+    }
+
+    /* ── update daily tracker & total row ────────── */
+    function updateDailyTotal() {
+      let totP = 0, totC = 0, totF = 0;
+
+      document.querySelectorAll('.food-item').forEach(item => {
+        const cb = item.querySelector('.food-checkbox');
+        if (cb.checked) {
+          totP += parseInt(item.dataset.p, 10) || 0;
+          totC += parseInt(item.dataset.c, 10) || 0;
+          totF += parseInt(item.dataset.f, 10) || 0;
+        }
+      });
+
+      const kcal = calcKcal(totP, totC, totF);
+      const pct  = Math.min(100, Math.round((kcal / PLANNED_KCAL) * 100));
+      const done = pct >= 100;
+
+      // Tracker card
+      $('t-kcal').textContent  = kcal.toLocaleString();
+      $('t-p').textContent     = totP;
+      $('t-c').textContent     = totC;
+      $('t-f').textContent     = totF;
+      $('tracker-pct').textContent = `${pct}%`;
+      $('tracker-fill').style.width = `${pct}%`;
+
+      $('tracker-pct').classList.toggle('complete', done);
+      $('tracker-fill').classList.toggle('complete', done);
+      $('tracker-card').classList.toggle('complete', done);
+
+      // Bottom total row
+      $('total-kcal').textContent = kcal.toLocaleString();
+      $('total-p').textContent    = totP;
+      $('total-c').textContent    = totC;
+      $('total-f').textContent    = totF;
+      $('total-row').classList.toggle('complete', done);
+    }
+
+    /* ── event listeners ─────────────────────────── */
+
+    // Meal-level checkbox → toggle all food items
+    document.querySelectorAll('.meal-checkbox').forEach(mealCb => {
+      mealCb.addEventListener('change', function () {
+        const mealId = this.id.replace('meal-', '');
+        const card   = document.querySelector(`.meal-card[data-meal="${mealId}"]`);
+        card.querySelectorAll('.food-checkbox').forEach(fcb => {
+          fcb.checked = this.checked;
+        });
+        updateMeal(mealId);
+      });
+    });
+
+    // Food-level checkbox → propagate up to meal
+    document.querySelectorAll('.food-checkbox').forEach(foodCb => {
+      foodCb.addEventListener('change', function () {
+        const mealId = this.closest('.meal-card').dataset.meal;
+        updateMeal(mealId);
+      });
+    });
+
+    // Keyboard accessibility: allow Space/Enter on label
+    document.querySelectorAll('.cb-wrap').forEach(wrap => {
+      wrap.addEventListener('keydown', e => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          const input = wrap.querySelector('input[type="checkbox"]');
+          input.checked = !input.checked;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      wrap.setAttribute('tabindex', '0');
+      wrap.setAttribute('role', 'checkbox');
+    });
+  </script>
+
+</body>
+</html>
